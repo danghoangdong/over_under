@@ -11,8 +11,9 @@ class TaiXiuGame extends StatefulWidget {
 class _TaiXiuGameState extends State<TaiXiuGame> {
   int _tongDiem = 0;
   String _ketQua = '';
-  int _betAmount = 0;
+  int _money = 50000;
   bool _isBetting = false;
+  int betAmount = 0;
 
   void _quay() {
     // Tạo ngẫu nhiên 3 số từ 1 đến 6
@@ -33,46 +34,118 @@ class _TaiXiuGameState extends State<TaiXiuGame> {
     _ketQua = ketQua;
   }
 
-  void _chonTai() {
-    setState(() {
-      if (_isBetting) {
-        _quay();
+  void _chonTai() async {
+    if (!_isBetting) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Enter Bet Amount'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('How much do you want to bet?'),
+                SizedBox(height: 16.0),
+                TextField(
+                  keyboardType: TextInputType.number,
+                  onChanged: (value) {
+                    betAmount = int.tryParse(value) ?? 0;
+                  },
+                ),
+              ],
+            ),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    _money -= betAmount;
+                    _isBetting = true;
+                  });
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Bet'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Cancel'),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      _quay();
 
-        // Kiểm tra kết quả và tính tiền thưởng hoặc mất tiền
-        if (_ketQua == 'Tài') {
-          _ketQua = 'Bingo';
-          _betAmount *= 2;
-        } else {
-          _ketQua = 'Fail';
-          _betAmount = 0;
-        }
-
-        _isBetting = false;
+      // Kiểm tra kết quả và tính tiền thưởng hoặc mất tiền
+      if (_ketQua == 'Tài') {
+        _ketQua = 'Bingo';
+        _money += 2 * betAmount;
       } else {
-        _isBetting = true;
+        _ketQua = 'Fail';
+        betAmount = 0;
       }
-    });
+
+      _isBetting = false;
+    }
   }
 
-  void _chonXiu() {
-    setState(() {
-      if (_isBetting) {
-        _quay();
+  void _chonXiu() async {
+    if (!_isBetting) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Enter Bet Amount'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('How much do you want to bet?'),
+                SizedBox(height: 16.0),
+                TextField(
+                  keyboardType: TextInputType.number,
+                  onChanged: (value) {
+                    betAmount = int.tryParse(value) ?? 0;
+                  },
+                ),
+              ],
+            ),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    _money -= betAmount;
+                    _isBetting = true;
+                  });
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Bet'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Cancel'),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      _quay();
 
-        // Kiểm tra kết quả và tính tiền thưởng hoặc mất tiền
-        if (_ketQua == 'Xỉu') {
-          _ketQua = 'Bingo';
-          _betAmount *= 2;
-        } else {
-          _ketQua = 'Fail';
-          _betAmount = 0;
-        }
-
-        _isBetting = false;
+      // Kiểm tra kết quả và tính tiền thưởng hoặc mất tiền
+      if (_ketQua == 'Xỉu') {
+        _ketQua = 'Bingo';
+        _money += 2 * betAmount;
       } else {
-        _isBetting = true;
+        _ketQua = 'Fail';
+        betAmount = 0;
       }
-    });
+
+      _isBetting = false;
+    }
   }
 
   @override
@@ -137,7 +210,7 @@ class _TaiXiuGameState extends State<TaiXiuGame> {
                   color: Colors.black,
                   child: Row(children: [
                     Text(
-                      'Bet Amount: $_betAmount',
+                      'Money: $_money',
                       style: TextStyle(
                         fontSize: 18.0,
                         color: Colors.white,
@@ -151,7 +224,7 @@ class _TaiXiuGameState extends State<TaiXiuGame> {
                           builder: (BuildContext context) {
                             int amountToAdd = 10;
                             return AlertDialog(
-                              title: Text('Add Bet Amount'),
+                              title: Text('Add money'),
                               content: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
@@ -169,7 +242,7 @@ class _TaiXiuGameState extends State<TaiXiuGame> {
                                 ElevatedButton(
                                   onPressed: () {
                                     setState(() {
-                                      _betAmount += amountToAdd;
+                                      _money += amountToAdd;
                                     });
                                     Navigator.of(context).pop();
                                   },
