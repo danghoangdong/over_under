@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 class TaiXiuGame extends StatefulWidget {
-  TaiXiuGame({Key? key}) : super(key: key);
+  const TaiXiuGame({Key? key}) : super(key: key);
 
   @override
   _TaiXiuGameState createState() => _TaiXiuGameState();
@@ -14,24 +14,31 @@ class _TaiXiuGameState extends State<TaiXiuGame> {
   int _money = 50000;
   bool _isBetting = false;
   int betAmount = 0;
+  int a = 1;
+  int b = 1;
+  int c = 1;
 
   void _quay() {
     // Tạo ngẫu nhiên 3 số từ 1 đến 6
-    final random = new Random();
+    var random = Random();
     int a = random.nextInt(6) + 1;
     int b = random.nextInt(6) + 1;
     int c = random.nextInt(6) + 1;
 
-    _tongDiem = a + b + c;
+    setState(() {
+      this.a = a;
+      this.b = b;
+      this.c = c;
 
-    // Tính kết quả Tài hay Xỉu
-    String ketQua = '';
-    if (_tongDiem < 9) {
-      ketQua = 'Xỉu';
-    } else {
-      ketQua = 'Tài';
-    }
-    _ketQua = ketQua;
+      _tongDiem = a + b + c;
+
+      // Tính kết quả Tài hay Xỉu
+      if (_tongDiem < 9) {
+        _ketQua = 'Xỉu';
+      } else {
+        _ketQua = 'Tài';
+      }
+    });
   }
 
   void _chonTai() async {
@@ -40,12 +47,12 @@ class _TaiXiuGameState extends State<TaiXiuGame> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Enter Bet Amount'),
+            title: const Text('Nhập tiền cược'),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('How much do you want to bet?'),
-                SizedBox(height: 16.0),
+                const Text('Cược bao nhiêu tiền'),
+                const SizedBox(height: 16.0),
                 TextField(
                   keyboardType: TextInputType.number,
                   onChanged: (value) {
@@ -61,23 +68,23 @@ class _TaiXiuGameState extends State<TaiXiuGame> {
                     _money -= betAmount;
                     _isBetting = true;
                   });
+                  _quay();
+
                   Navigator.of(context).pop();
                 },
-                child: const Text('Bet'),
+                child: const Text('Cược'),
               ),
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: const Text('Cancel'),
+                child: const Text('Hủy'),
               ),
             ],
           );
         },
       );
     } else {
-      _quay();
-
       // Kiểm tra kết quả và tính tiền thưởng hoặc mất tiền
       if (_ketQua == 'Tài') {
         _ketQua = 'Bingo';
@@ -97,12 +104,12 @@ class _TaiXiuGameState extends State<TaiXiuGame> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Enter Bet Amount'),
+            title: const Text('Nhập tiền cược'),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('How much do you want to bet?'),
-                SizedBox(height: 16.0),
+                const Text('Cược bao nhiêu tiền'),
+                const SizedBox(height: 16.0),
                 TextField(
                   keyboardType: TextInputType.number,
                   onChanged: (value) {
@@ -118,23 +125,23 @@ class _TaiXiuGameState extends State<TaiXiuGame> {
                     _money -= betAmount;
                     _isBetting = true;
                   });
+                  _quay();
+
                   Navigator.of(context).pop();
                 },
-                child: const Text('Bet'),
+                child: const Text('Cược'),
               ),
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: const Text('Cancel'),
+                child: const Text('Hủy'),
               ),
             ],
           );
         },
       );
     } else {
-      _quay();
-
       // Kiểm tra kết quả và tính tiền thưởng hoặc mất tiền
       if (_ketQua == 'Xỉu') {
         _ketQua = 'Bingo';
@@ -152,7 +159,7 @@ class _TaiXiuGameState extends State<TaiXiuGame> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Game Tài Xỉu'),
+          title: const Text('Game Tài Xỉu'),
         ),
         body:
             Stack(// Wrap content with a Stack widget to position the bet amount
@@ -164,39 +171,51 @@ class _TaiXiuGameState extends State<TaiXiuGame> {
             height: double.infinity,
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/images/nen.jpg'),
+                image: AssetImage('assets/imges/nen.jpg'),
                 fit: BoxFit.cover,
               ),
             ),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  'Tổng điểm: $_tongDiem',
-                  style: TextStyle(fontSize: 24.0),
+                Text('Tổng điểm: $_tongDiem',
+                    style: const TextStyle(fontSize: 24.0)),
+                const SizedBox(height: 16.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/imges/$a.png',
+                      width: 80.0,
+                      height: 80.0,
+                    ),
+                    const SizedBox(width: 16.0),
+                    Image.asset(
+                      'assets/imges/$b.png',
+                      width: 80.0,
+                      height: 80.0,
+                    ),
+                    const SizedBox(width: 16.0),
+                    Image.asset(
+                      'assets/imges/$c.png',
+                      width: 80.0,
+                      height: 80.0,
+                    ),
+                  ],
                 ),
-                SizedBox(height: 16.0),
+                const SizedBox(height: 16.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
                       onPressed: _chonTai,
-                      child: Text('Tài'),
+                      child: const Text('Tài'),
                     ),
-                    SizedBox(width: 16.0),
+                    const SizedBox(width: 16.0),
                     ElevatedButton(
                       onPressed: _chonXiu,
-                      child: Text('Xỉu'),
+                      child: const Text('Xỉu'),
                     ),
                   ],
-                ),
-                SizedBox(height: 32.0),
-                Text(
-                  'Kết quả: $_ketQua',
-                  style: TextStyle(
-                    fontSize: 24.0,
-                    color: _ketQua == 'Bingo' ? Colors.green : Colors.red,
-                  ),
                 ),
               ],
             ),
@@ -211,12 +230,12 @@ class _TaiXiuGameState extends State<TaiXiuGame> {
                   child: Row(children: [
                     Text(
                       'Money: $_money',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 18.0,
                         color: Colors.white,
                       ),
                     ),
-                    SizedBox(width: 8.0),
+                    const SizedBox(width: 8.0),
                     ElevatedButton(
                       onPressed: () {
                         showDialog(
@@ -224,12 +243,12 @@ class _TaiXiuGameState extends State<TaiXiuGame> {
                           builder: (BuildContext context) {
                             int amountToAdd = 10;
                             return AlertDialog(
-                              title: Text('Add money'),
+                              title: const Text('Nạp Tiền'),
                               content: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Text('How much do you want to add?'),
-                                  SizedBox(height: 16.0),
+                                  const Text('Số tiền nạp'),
+                                  const SizedBox(height: 16.0),
                                   TextField(
                                     keyboardType: TextInputType.number,
                                     onChanged: (value) {
@@ -246,20 +265,20 @@ class _TaiXiuGameState extends State<TaiXiuGame> {
                                     });
                                     Navigator.of(context).pop();
                                   },
-                                  child: const Text('Add'),
+                                  child: const Text('Nạp'),
                                 ),
                                 ElevatedButton(
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                   },
-                                  child: const Text('Cancel'),
+                                  child: const Text('Hủy'),
                                 ),
                               ],
                             );
                           },
                         );
                       },
-                      child: Icon(Icons.add),
+                      child: const Icon(Icons.add),
                     )
                   ])))
         ]));
